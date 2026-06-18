@@ -1,5 +1,6 @@
 package com.example.testequipux.exception;
 
+import com.example.testequipux.exception.InvalidCredentialsException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -63,6 +64,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    protected ResponseEntity<Object> handleInvalidCredentials(InvalidCredentialsException ex) {
+        Map<String, Object> body = Map.of(
+                "timestamp", OffsetDateTime.now().toString(),
+                "status", HttpStatus.UNAUTHORIZED.value(),
+                "message", ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
