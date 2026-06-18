@@ -50,4 +50,12 @@ public class UserServiceImpl implements UserService {
         return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
     }
+
+    @Override
+    public void deleteUserById(Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException("User not found with id " + id);
+        }
+        repository.deleteById(id);
+    }
 }
