@@ -9,4 +9,5 @@ public interface UserService {
     List<User> listUsers();
     User getUserById(Long id);
     void deleteUserById(Long id);
+    String login(String email, String password);
 }

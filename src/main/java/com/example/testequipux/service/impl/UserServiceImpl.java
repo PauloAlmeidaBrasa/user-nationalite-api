@@ -3,8 +3,10 @@ package com.example.testequipux.service.impl;
 import com.example.testequipux.dto.request.CreateUserRequest;
 import com.example.testequipux.entity.User;
 import com.example.testequipux.exception.DuplicateResourceException;
+import com.example.testequipux.exception.InvalidCredentialsException;
 import com.example.testequipux.exception.ResourceNotFoundException;
 import com.example.testequipux.repository.UserRepository;
+import com.example.testequipux.security.JwtTokenProvider;
 import com.example.testequipux.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +16,11 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public UserServiceImpl(UserRepository repository) {
+    public UserServiceImpl(UserRepository repository, JwtTokenProvider jwtTokenProvider) {
         this.repository = repository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -57,5 +61,17 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("User not found with id " + id);
         }
         repository.deleteById(id);
+    }
+
+    @Override
+    public String login(String email, String password) {
+        User user = repository.findByEmail(email)
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+
+        if (!user.getPassword().equals(password)) {
+            throw new InvalidCredentialsException("Invalid email or password");
+        }
+
+        return jwtTokenProvider.createToken(user.getEmail());
     }
 }
