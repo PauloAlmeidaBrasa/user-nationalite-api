@@ -1,5 +1,6 @@
 package com.example.testequipux.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -48,6 +49,35 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 "timestamp", OffsetDateTime.now().toString(),
                 "status", HttpStatus.BAD_REQUEST.value(),
                 "message", ex.getMessage()
+        );
+
+        return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    protected ResponseEntity<Object> handleResourceNotFound(ResourceNotFoundException ex) {
+        Map<String, Object> body = Map.of(
+                "timestamp", OffsetDateTime.now().toString(),
+                "status", HttpStatus.NOT_FOUND.value(),
+                "message", ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
+        List<Map<String, String>> errors = ex.getConstraintViolations()
+                .stream()
+                .map(violation -> Map.of(
+                        "field", violation.getPropertyPath().toString(),
+                        "message", violation.getMessage()))
+                .collect(Collectors.toList());
+
+        Map<String, Object> body = Map.of(
+                "timestamp", OffsetDateTime.now().toString(),
+                "status", HttpStatus.BAD_REQUEST.value(),
+                "errors", errors
         );
 
         return ResponseEntity.badRequest().body(body);

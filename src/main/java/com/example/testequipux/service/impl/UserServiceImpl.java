@@ -3,6 +3,7 @@ package com.example.testequipux.service.impl;
 import com.example.testequipux.dto.request.CreateUserRequest;
 import com.example.testequipux.entity.User;
 import com.example.testequipux.exception.DuplicateResourceException;
+import com.example.testequipux.exception.ResourceNotFoundException;
 import com.example.testequipux.repository.UserRepository;
 import com.example.testequipux.service.UserService;
 import org.springframework.stereotype.Service;
@@ -42,5 +43,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> listUsers() {
         return repository.findAll();
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
     }
 }
