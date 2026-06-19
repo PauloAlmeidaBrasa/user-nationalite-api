@@ -77,6 +77,12 @@ bash ./mvnw clean package
 java -jar target/testequipux-0.0.1-SNAPSHOT.jar
 ```
 
+## Use este usuario padarão
+ email: paulo@email.com
+ password: 123
+
+Use o Maven wrapper a partir da raiz do projeto:
+
 A API ficará disponível em:
 
 ```
@@ -190,6 +196,9 @@ Or build the JAR and run it manually:
 bash ./mvnw clean package
 java -jar target/testequipux-0.0.1-SNAPSHOT.jar
 ```
+## Use this default user
+ email: paulo@email.com
+ password: 123
 
 The API will be available at:
 
